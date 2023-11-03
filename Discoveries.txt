@@ -1,0 +1,420 @@
+What you will learn at the end of this tutorial
+1. A powerful 3D graphics library
+2. React Three Fiber (Library for ThreeJS in React). It's a popular library for creating 3D graphics with ThreeJS in React
+3. tailwindcss - A popular utility-first css styling framework.
+4. Framer Motion for Animation in React - the most popular libray use to bring your react website to life with animations.
+5. Learn how to load, create and customize sunning 3d models in Gemetrics with various lights, as well as understanding the 3D world with Camera, Position of an object in the space.
+6. Make your code Reusable and Scalable
+7. High Order Components
+8. and other industry-standard best practices.
+9. Implement sending Email to a form in the website using Email JS.
+10. Responsivenes.
+
+Initialize Application
+----------------------
+We use a tool call vite. Recently become more popular and more power than create-react-app.
+Just run the Command:
+npm create vite@latest ./ -- --template react.
+
+This is going to create a new npm react application.
+
+./ means you are referring to the folder you've already created.
+
+Before npm install and npm run dev
+We first install other packages
+1. tailwindcss
+link to site:https://tailwindcss.com/docs/installation
+
+All the Additional Packages we will need for the project
+1. --legacy-peer-deps
+We are installing --legacy-peer-deps because of react-tilt. It's something you do often when using some older packages
+
+2. @react-three/fiber
+This is a react based threejs library, that's going to allow us create ThreeJS Codein a React fashion. NB: @ - means add
+
+3. @react-three/drei maath - when working with ThreeJS there will be alot of geometry and we will definitely need those drei function
+
+4. react-tilt - is going to provide a really cool animation when hovering over a card
+
+5. react-vertical-timeline-component @emailjs/browser - For experience similar to the one on LinkedIn
+
+6.@emailjs/browswer
+
+7. framer-motion
+
+8. react-router-dom - fro routing
+That's all
+
+Create Default Component.
+
+GitHub Gist
+Link for setup: https://gist.github.com/adrianhajdin/b1d33c262941a7e21aad833a1cfc84b1.
+index.js contain: gradient
+Box shadow
+Google font
+and tailwind 
+
+style.js contain: styles for your project.
+
+After update the tailwind content.
+It contains color.boxshadow,screen,background objects for styling your poject
+
+motion.js contain:  framework motion animation that we can use our project
+
+constants/index.js: contains all the content we will use in our application. the ones that remain constant. Instead of putting all of the constant text in our code we have placed it in a single file where you will be able to change it ones and it's going to be a reference to the belch. That means that you can change a specific experience. a date, a point, you can change everything to march your development experience, and that will be reflected in the code.
+
+when you are done with the file structure.
+
+run the command: npm ren dev to run the application
+
+Next:
+Import all the component you will need in App.js
+
+import { BrowserRouter } from "react-router-dom"; //Will be used for routing
+import {About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works, StarsCanvas} from './components'
+
+When you are done with the import.
+You route the components around the BrowserRouter in the App component
+eg.<BrowserRouter>
+       <div className="relative z-0 bg-primary">
+            <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
+                <Navbar />
+            </div>
+       </div>
+    </BrowserRouter> 
+
+Now
+in Navbar
+mport React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; //Use to navigate to other part of our page.
+
+Import styles component
+import { styles } from  '../style'
+
+Import navLinks inside index.jx in constants folder
+import { navLinks } from '../constants'
+
+Import images you will need for the navbar from asset.
+import { logo, menu, close } from '../assets'
+
+Now start work on the navbar
+
+<Link
+   to = "/"
+    className='flex items-center gap-2'
+    onClick={() => {
+         setActive("");
+	 Window.scrollTo(0, 0);
+      }}
+
+"/" - it means the top of the page
+
+setActive() function is going to keep track of where we are currently on the page
+
+Window.scrollTo(0, 0) - this will scroll to the top of the page
+
+w-1 - 4px. therefore w-9 = 36px
+
+NB: The tailwindcss will not have effect on the vite react app until you install tailwincss with vite package, that's
+npm install --lagacy-peer-deps -D postcss autoprefixer.
+
+Link to doc:  https://tailwindcss.com/docs/guides/vite
+
+Incase you need any logo for a site: just go to logo.com to generate one
+
+Add the list (about, work, contact).
+Use map() function to list them, when done set their activeness
+ <li
+    key = {link.id}
+    className={`${
+    active === link.title ? "text-white" : "text-secondary"
+    } hover:text-white text-[18px] font-medium cursor-pointer`}
+    onClick={() => setActive(link.title)}
+   >
+    <a href={`#${link.id}`} >{link.title}</a>
+</li>
+
+NB: try to apply object-fit property in your image as far as you can to resize them using their parent container. (fill,cover, contain). Be fund of using contain
+
+When done, create a mobile version of the navbar
+
+&nbsp; - means empty (it's a code character)
+inset-0 - inset is used in position property - means span both top edges and bottom edges
+inset-x-0 with top-0 - means span top edge
+inset-y-0 with left-0 means span left edge
+
+HERO
+When you are done with heroTitle and subtitle
+
+You then work on the 3D in the computercanvas component
+we can do that by importing alot of things from react.
+import { Suspense, useEffect, useState}from 'react'
+import { Canvas } from '@react-three/fiber' - Canvas is just an empty canvas but we can place something on it
+
+import { OrbitControls, Preload, useGLTF } from '@react-three/drei' - Will help us draw on the canvas.
+useGLTF is the most import component among them all, it allow us to import 3D models.
+
+After the import,
+we can import our GLTF model, we can do that by typing inside the Computers component.
+eg.
+const Computers = () => {
+  const computer = useGLTF('./desktop_pc/scene.gltf') //spacifying the scene media in your folder.
+}
+When you are done importing, you make use of it.
+
+First of all, when creating 3D element, we don't start with a div rather we start with a mesh like this:
+return (
+    <mesh>
+    </mesh>
+  )
+
+Inside of the mesh, we have to create a light, otherwise you won't be able to see anything.So we add a hemisphereLight, pointLight
+eg.  <hemisphereLight intensity={0.15} groundColor="black" />
+     <pointLight intensity={1} />
+        <primitive object = {computer.scene}
+     />
+
+Link to All the light:https://docs.pmnd.rs/react-three-fiber/getting-started/introduction.
+You search for Adding lights
+
+You will still not be able to see the light until you hold it in the canva.
+
+So we create a ComputersCanvas Component below the Computers Components
+Inside it, we return the Canvas component. and add some attributes:
+frameLoop
+shadows
+camera
+gl
+eg.   <Canvas
+      frameLoop = "demand"
+      shadows
+      camera={{position: [20, 3, 5], fov: 25}}
+       gl = {{preserveDrawingBuffer: true}}
+     />
+
+camera - use can set the position of the camera on the light and fov
+fov (means field of view): is how wide our field of view is going to be
+
+We set the preserveDrawingBuffer to true. it has to be there to properly render the model.
+
+After that we can add a suspense as a component in the canvas
+
+Suspense is not from threejs but react, it allows us to have a loader while our is model loading. And inside it will have an OrbitControl component.
+<Suspense fallback = {<CanvasLoader />}>
+          <OrbitControls 
+             enableZoom={false}/>
+	     maxPolarAngle={Math.PI / 2}
+             minPolarAngle={Math.PI / 2}
+      </Suspense>
+The OrbitControls component allow us to move the model left and right.
+We set the enable to false because we don't want to zoom
+The maxPolarAngle and minPolarAngle allows us to move the model to a specify angle not to move it anyhow.
+When we are done with that, next is to render the computer component inside the suspense.
+e.g
+<Suspense fallback = {<CanvasLoader />}>
+          <OrbitControls 
+          enableZoom={false}
+          maxPolarAngle={Math.PI / 2}
+          minPolarAngle={Math.PI / 2}
+          />
+          <Computers />
+      </Suspense>
+
+Below the suspense we add a preload component and specify all.
+ <Preload all />
+
+NB: You have to install the original threejs package to continue
+The command is
+npm install --legacy-peer-deps three
+
+After that, the model should render.
+You can add a spotLight to the hemisphereLight Component for more light.
+
+Where you can find the 3d models.
+Just type 3d models on the browser and you will see alot of them.
+Example is Sketchfab, link:https://sketchfab.com/3d-models.
+
+NB: The 3d model breaks when the browser is loading, so to fix that, we use loader.
+Inside the loader component, we import some components
+1. import {HTML, useProgress} from '@react-three/drei'
+Inside the return statement we use the HTML component inside and we render the progress
+inside the HTML and we still it
+eg.
+ <HTML>
+        <span className='canvas-load'></span>
+        <p
+            style={{
+              fontSize: 14,
+              color: '##f1f1f1',
+              fontWeight: 800,
+              marginTop: 40
+            }}
+        >{progress.toFixed(2)}%</p>
+    </HTML>
+
+When then you create motion handle at the bottom of the hero, when clicked on, navigate user to about section.
+To achieve that, you first import motion.
+import { motion } from 'framer-motion'
+and you go ahead and use it. eg.
+<a href="#about">
+              <div class=" w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2 ">
+                <motion.dev 
+                  animate={{
+                    y: [0, 24, 0]
+                  }}
+                  transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      repeatType: 'loop'
+                    }}
+                  className="w-3 h-3 rounded-full bg-secondary mb-1"
+                  />
+              </div>
+          </a>
+
+
+Since we want the 3d to be responsive, we make use of the useEffect hook.
+We first creat a Ismobile useState and we set it to false
+eg. const [isMobile, setIsMobile] = useState(false)
+
+Then follow by the useEffect
+eg.   useEffect(() => {
+      //Ass a listener for changes to the screen size
+      const mediaQuery = window.matchMedia('(max-width: 500px');
+  
+      //Set the initial value of the `ismobile` state variable
+      setIsMobile(mediaQuery.matches);
+
+      //Define a callback function to handle changes to the media query
+      const handleMediaQueryChange = (event) => {
+        setIsMobile(event.matches); 
+      }
+
+      //Add the callback function as a listener for changes to the media query
+      mediaQuery.addEventListener('change', handleMediaQueryChange)
+
+    //Remove the listener when the component is unmounted
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaQueryChange)
+    }
+      
+    }, [])
+
+
+
+1. In the useEffect, we check whether the window size or screen size is 500px or less. If it's greater the the specify screen size when you run console.log(mediaQuery), it return an object MediaQueryList containing this following properties
+eg.matches: false
+   media: "(max-width: 500px)"
+   onchange: null
+   [[Prototype]]: MediaQueryListaddListener:
+
+But when the screen size is less or equal to the specify size it returns
+MediaQueryList {media: '(max-width: 500px)', matches: true, onchange: null}
+
+2. We use the result to set the state
+e.g   setIsMobile(mediaQuery.matches)
+
+3. We create a function to handle the media query change
+
+
+ABOUT COMPONENT
+---------------
+first import Tilt from 'react-titlt'
+import { Tilt } from 'react-tilt'
+import { motion } from 'framer-motion';
+
+import { styles } from '../styles';
+import { services } from '../constants';
+import { fadeIn, textVariant } from '../utils/motion';
+
+Using map function to get all the service from the service array.
+Use component to render the services.
+e.g
+  <div className="mt-20 flex flex-wrap gap-10">
+        {services.map((service, index) => {
+          return (
+          <ServiceCard key={service.title} index={index} {...service} />)
+        })}
+      </div>
+const ServiceCard = ({ index, title, icon }) => {
+  return (
+    <p>{title}</p>
+  )
+}
+
+
+When you are done,
+use Higher Order Component to wrap the sections by giving them equal left and right space.
+
+Create the sectionWrapper component that recieve Original Component and id name, for navigation. eg.
+import { motion } from 'framer-motion';
+
+import { styles } from '../styles';
+import { staggerContainer } from '../utils/
+
+function SectionWrapper(Component, idName) {
+  return (
+   <motion.section
+            variants = {staggerContainer()}
+        >
+            <Component />
+        </motion.section>
+  )
+}
+
+staggerContainer() function will animate the sections
+
+Experience Section
+---------------------
+import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component"
+
+For our verticalTimeline to work we alos have to import:
+import 'react-vertical-timeline-component/style.min.css';  
+
+import { motion } from "framer-motion"; //for animation
+
+import { styles } from "../styles"; //Contain styles
+import { experiences } from "../constants"; //Contain the Content will need for the experience section
+import { SectionWrapper } from "../hoc"; //To wrap the content to have the same properties with other sections. like padding etc
+import { textVariant } from "../utils/motion";
+
+The verticalTime and VerticalTimelineElement helps to utilize the timeline component. Are you have to know, is how to use it.
+
+NB: Normally instead of using the return statement to return block of element, you can just do away with the brace and use parenthesis, it tells react you want to return that block of system.
+e.g
+
+const ExperienceCard = ({ experience }) => (
+  <VerticalTimelineElement
+    contentStyle = {{background: '#1d1836', color: '#fff'}}
+    contentArrowStyle = {{borderRight: '7px solid #232631'}}
+    date={experience.date}
+    icon={
+      <div className="flex justify-center items-center w-full h-full">
+        <img 
+          src={experience.icon}
+          alt={experience.company_name}
+          className="w-[60%] h-[60%] object-contain"
+          />
+      </div>
+    }
+    iconStyle={{background: experience.iconBg}}
+  >
+       <div className="text-white text-[24px] font-bold">
+          <h3>{experience.title}</h3>
+          <p className="text-secondary text-[16]" style={{ margin: 0 }}>{experience.company_name}</p>
+       </div>
+
+       <ul className="mt-5 list-disc ml-5 space-y-2">
+          {experience.points.map((point, index) => (
+            <li key={`experience-point-${index}`}
+            className="text-white-100 text-[14px] pl-1 tracking-wider"
+            >
+                {point}
+            </li>
+          ))}
+       </ul>
+  </VerticalTimelineElement>
+) and not vertical-timeline component will take care of the responsiveness, so you have nothing to worry about
+
+
+NB: If you use a component that isn't define, it will break your code. cos that particular component won't be able to render which will break the code
